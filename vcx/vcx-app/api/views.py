@@ -56,6 +56,11 @@ class BookByIdView(View):
 # ver todos os autores / adicionar
 class AuthorsView(View):
     def get(self, request):
+        name = request.GET.get("name")
+        if name:
+            authors = Author.objects.filter(name__icontains=name)
+            serializer = AuthorSerializer(authors, many=True)
+            return JsonResponse(serializer.data, safe=False)
         authors = Author.objects.all()
         serializer = AuthorSerializer(authors, many=True)
         return JsonResponse(serializer.data, safe=False)
