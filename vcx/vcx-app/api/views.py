@@ -46,12 +46,14 @@ class BookByIdView(View):
             return JsonResponse(serializer.data, status=201)
         return JsonResponse(serializer.errors, status=400)
 
+    # deleta livro especifico
     def delete(self, request, id):
         book = get_object_or_404(Book, id=id)
         book.delete()
+        return JsonResponse({"message": "Book deleted successfully"}, status=200)
 
 
-# Class-based view for listing and creating authors
+# ver todos os autores / adicionar
 class AuthorsView(View):
     def get(self, request):
         authors = Author.objects.all()
@@ -76,8 +78,33 @@ class AuthorBooksView(View):
         return JsonResponse(serializer.data, safe=False)
 
 
+# mostra informacao pessoal do autor
 class AuthorByIdView(View):
     def get(self, request, author_id):
         author = get_object_or_404(Author, id=author_id)
         serializer = AuthorSerializer(author)
         return JsonResponse(serializer.data)
+
+    def delete(self, request, author_id):
+        author = get_object_or_404(Author, id=author_id)
+        for book in author.books.all():
+            if book.authors.count() == 1:  # Check if the author is the only one
+                return JsonResponse(
+                    {
+                        "response": f"You need to delete or update the book with id {book.id} "
+                        "first, as this author is the only one in it."
+                    },
+                    status=400,  # Use a 400 status for client error
+                )
+
+        author.delete()
+        return JsonResponse({"status": "Author deleted"}, status=200)
+
+    def put(self, request, author_id):
+        author = get_object_or_404(Author, id=author_id)
+        data = json.loads(request.body)
+        serializer = AuthorSerializer(author, data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.errors, status=400)
