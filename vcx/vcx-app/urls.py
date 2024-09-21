@@ -14,11 +14,17 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.urls import path
 from .api.views import BooksView, AuthorsView, BookByIdView
+from django.views.decorators.csrf import get_token
+
 
 urlpatterns = [
-    path('api/books/', BooksView.as_view(), name='all_books'), #usei esse as view por que fica mais clean e eh nativo do django
-    path('api/authors/', AuthorsView.as_view(), name='all_authors'),
-    path('api/books/<int:id>/', BookByIdView.as_view(), name='book_by_id'),
+    path(
+        "api/books/", BooksView.as_view(), name="all_books"
+    ),  # usei esse as view por que fica mais clean e eh nativo do django
+    path("api/authors/", AuthorsView.as_view(), name="all_authcors"),
+    path("api/books/<int:id>/", BookByIdView.as_view(), name="book_by_id"),
+    path("api/csrf-token/", get_token, name="api-csrf-token"),
 ]
