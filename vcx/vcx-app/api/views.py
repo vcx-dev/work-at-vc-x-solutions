@@ -11,10 +11,26 @@ import json
 class BooksView(View):
     def get(self, request):
         books = Book.objects.all()
+        name = request.GET.get("name")
+        edition = request.GET.get("edition")
+        year_published = request.GET.get("year_published")
+        authorsid = request.GET.get("authors")
+        if name:
+            books = books.filter(name__icontains=name)
+        if edition:
+            books = books.filter(edition__icontains=edition)
+        if year_published:
+            books = books.filter(year_published=year_published)
+        if authorsid:
+            books = books.filter(
+                author__icontains=authorsid
+            )  # GENIAL ISSO AQUI! MUITO SIMPLES
+
+        if not books.exists():
+            return JsonResponse({"message": "No books found"}, status=404)
+
         serializer = BookSerializer(books, many=True)
-        return JsonResponse(
-            serializer.data, safe=False
-        )  # Safe=False allows a list to be returned
+        return JsonResponse(serializer.data, safe=False)
 
     def post(self, request):
         try:
@@ -57,11 +73,11 @@ class BookByIdView(View):
 class AuthorsView(View):
     def get(self, request):
         name = request.GET.get("name")
-        if name:
-            authors = Author.objects.filter(name__icontains=name)
+        authors = Author.objects.all()
+        if name:  # se tiver nome nos paramentros, filtra
+            authors = authors.filter(name__icontains=name)
             serializer = AuthorSerializer(authors, many=True)
             return JsonResponse(serializer.data, safe=False)
-        authors = Author.objects.all()
         serializer = AuthorSerializer(authors, many=True)
         return JsonResponse(serializer.data, safe=False)
 
