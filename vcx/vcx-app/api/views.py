@@ -17,12 +17,17 @@ class BooksView(View):
         )  # Safe=False allows a list to be returned
 
     def post(self, request):
-        serializer = BookSerializer(data=request.POST)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        else:
+        try:
+            # Load the data from request.body
+            data = json.loads(request.body)
+            # Serialize the data
+            serializer = BookSerializer(data=data)
+            if serializer.is_valid():
+                serializer.save()
+                return JsonResponse(serializer.data, status=201)
             return JsonResponse(serializer.errors, status=400)
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON"}, status=400)
 
 
 # Class-based view for retrieving a book by its ID
@@ -56,7 +61,23 @@ class AuthorsView(View):
     def post(self, request):
         data = json.loads(request.body)
         serializer = AuthorSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()  # Save the new author
+        if serializer.is_valid():  # se tiver todos os campos no formato correto
+            serializer.save()  # salva
             return JsonResponse(serializer.data, status=201)
         return JsonResponse(serializer.errors, status=400)
+
+
+# classe para retornar todos os livros feitos por um author
+class AuthorBooksView(View):
+    def get(self, request, author_id):
+        author = get_object_or_404(Author, id=author_id)  # try catch basicamente
+        books_made_by_author = author.books.all()
+        serializer = BookSerializer(books_made_by_author, many=True)
+        return JsonResponse(serializer.data, safe=False)
+
+
+class AuthorByIdView(View):
+    def get(self, request, author_id):
+        author = get_object_or_404(Author, id=author_id)
+        serializer = AuthorSerializer(author)
+        return JsonResponse(serializer.data)

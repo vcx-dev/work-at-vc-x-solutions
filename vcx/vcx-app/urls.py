@@ -16,7 +16,13 @@ Including another URLconf
 """
 
 from django.urls import path
-from .api.views import BooksView, AuthorsView, BookByIdView
+from .api.views import (
+    BooksView,
+    AuthorsView,
+    BookByIdView,
+    AuthorBooksView,
+    AuthorByIdView,
+)
 from django.views.decorators.csrf import get_token
 
 
@@ -27,4 +33,10 @@ urlpatterns = [
     path("api/authors/", AuthorsView.as_view(), name="all_authcors"),
     path("api/books/<int:id>/", BookByIdView.as_view(), name="book_by_id"),
     path("api/csrf-token/", get_token, name="api-csrf-token"),
+    path("api/authors/<int:author_id>", AuthorBooksView.as_view()),
+    path(
+        "api/authors/<int:author_id>/books",
+        AuthorBooksView.as_view(),
+        name="author_books",
+    ),
 ]
