@@ -16,6 +16,7 @@ Including another URLconf
 """
 
 from django.urls import path
+from django.contrib import admin
 from .api.views import (
     BooksView,
     AuthorsView,
@@ -27,6 +28,7 @@ from django.views.decorators.csrf import get_token
 
 
 urlpatterns = [
+    path("admin/", admin.site.urls),
     path(
         "api/books/", BooksView.as_view(), name="all_books"
     ),  # usei esse as view por que fica mais clean e eh nativo do django

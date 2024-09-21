@@ -8,14 +8,31 @@ class AuthorSerializer(serializers.ModelSerializer):
         fields = "__all__"
         read_only_fields = ["id"]
 
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        return {
+            "id": representation["id"],
+            "nome": representation["name"],
+        }
+
 
 class BookSerializer(serializers.ModelSerializer):
     authors = serializers.PrimaryKeyRelatedField(
         many=True,
-        queryset=Author.objects.all(),  # trata os autores com pk e nao objetos
+        queryset=Author.objects.all(),
     )
 
     class Meta:
         model = Book
         fields = ["id", "name", "edition", "year_published", "authors"]
         read_only_fields = ["id"]
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        return {
+            "id": representation["id"],
+            "nome": representation["name"],
+            "edição": representation["edition"],
+            "ano de publicação": representation["year_published"],
+            "autores": representation["authors"],
+        }

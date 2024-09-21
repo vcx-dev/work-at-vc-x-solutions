@@ -11,10 +11,10 @@ import json
 class BooksView(View):
     def get(self, request):
         books = Book.objects.all()
-        name = request.GET.get("name")
-        edition = request.GET.get("edition")
-        year_published = request.GET.get("year_published")
-        authorsid = request.GET.get("authors")
+        name = request.GET.get("nome")
+        edition = request.GET.get("edição")
+        year_published = request.GET.get("ano de publicação")
+        authorsid = request.GET.get("autores")
         if name:
             books = books.filter(name__icontains=name)
         if edition:
@@ -32,16 +32,26 @@ class BooksView(View):
         serializer = BookSerializer(books, many=True)
         return JsonResponse(serializer.data, safe=False)
 
-    def post(self, request):
+    def post(self, request):  # por que fizeram em portugues?? com espaço e ç
         try:
             # Load the data from request.body
             data = json.loads(request.body)
+
+            # pego os dados do post em portugues, transformo em ingles, e passo pro serializer
+            mapped_data = {
+                "name": data.get("nome"),
+                "edition": data.get("edição"),
+                "year_published": data.get("ano de publicação"),
+                "authors": data.get("autores"),
+            }
+
             # Serialize the data
-            serializer = BookSerializer(data=data)
+            serializer = BookSerializer(data=mapped_data)
             if serializer.is_valid():
                 serializer.save()
                 return JsonResponse(serializer.data, status=201)
             return JsonResponse(serializer.errors, status=400)
+
         except json.JSONDecodeError:
             return JsonResponse({"error": "Invalid JSON"}, status=400)
 
@@ -56,7 +66,14 @@ class BookByIdView(View):
     def put(self, request, id):
         book = get_object_or_404(Book, id=id)
         data = json.loads(request.body)
-        serializer = BookSerializer(book, data=data)  # atualizando o atual
+        mapped_data = {
+            "name": data.get("nome"),
+            "edition": data.get("edição"),
+            "year_published": data.get("ano de publicação"),
+            "authors": data.get("autores"),
+        }
+
+        serializer = BookSerializer(book, data=mapped_data)  # atualizando o atual
         if serializer.is_valid():
             serializer.save()
             return JsonResponse(serializer.data, status=201)
@@ -124,7 +141,10 @@ class AuthorByIdView(View):
     def put(self, request, author_id):
         author = get_object_or_404(Author, id=author_id)
         data = json.loads(request.body)
-        serializer = AuthorSerializer(author, data=data)
+        mapped_data = {
+            "name": data.get("nome"),
+        }
+        serializer = AuthorSerializer(author, data=mapped_data)
         if serializer.is_valid():
             serializer.save()
             return JsonResponse(serializer.data, status=201)

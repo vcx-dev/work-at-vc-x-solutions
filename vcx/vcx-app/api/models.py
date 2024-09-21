@@ -13,9 +13,9 @@ class Author(models.Model):
 
 class Book(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=100)
-    edition = models.CharField(max_length=100)
-    year_published = models.IntegerField()
+    name = models.CharField(max_length=100, verbose_name="nome")
+    edition = models.CharField(max_length=100, verbose_name="edição")
+    year_published = models.IntegerField(max_length=5, verbose_name="ano de publicação")
     authors = models.ManyToManyField(
         Author, related_name="books"
     )  # django ja relaciona automaticamente, nome eh books
