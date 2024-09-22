@@ -18,4 +18,4 @@ class Book(models.Model):
     year_published = models.IntegerField(max_length=5, verbose_name="ano de publicação")
     authors = models.ManyToManyField(
         Author, related_name="books"
-    )  # django ja relaciona automaticamente, nome eh books
+    )  # django ja relaciona automaticamente, nome eh books para chamar

@@ -89,7 +89,7 @@ class BookByIdView(View):
 # ver todos os autores / adicionar
 class AuthorsView(View):
     def get(self, request):
-        name = request.GET.get("name")
+        name = request.GET.get("nome")
         authors = Author.objects.all()
         if name:  # se tiver nome nos paramentros, filtra
             authors = authors.filter(name__icontains=name)
@@ -100,6 +100,10 @@ class AuthorsView(View):
 
     def post(self, request):
         data = json.loads(request.body)
+        if Author.objects.filter(
+            name__icontains=data.get("nome")
+        ):  # verifica se autor existe
+            return JsonResponse({"message": "Author already exists"}, status=400)
         serializer = AuthorSerializer(data=data)
         if serializer.is_valid():  # se tiver todos os campos no formato correto
             serializer.save()  # salva
