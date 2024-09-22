@@ -100,10 +100,6 @@ class AuthorsView(View):
 
     def post(self, request):
         data = json.loads(request.body)
-        if Author.objects.filter(
-            name__icontains=data.get("nome")
-        ):  # verifica se autor existe
-            return JsonResponse({"message": "Author already exists"}, status=400)
         serializer = AuthorSerializer(data=data)
         if serializer.is_valid():  # se tiver todos os campos no formato correto
             serializer.save()  # salva
