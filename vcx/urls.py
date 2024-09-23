@@ -17,7 +17,7 @@ Including another URLconf
 
 from django.urls import path
 from django.contrib import admin
-from .api.views import (
+from api.views import (
     BooksView,
     AuthorsView,
     BookByIdView,
@@ -32,10 +32,10 @@ urlpatterns = [
     path(
         "api/books/", BooksView.as_view(), name="all_books"
     ),  # usei esse as view por que fica mais clean e eh nativo do django
-    path("api/authors/", AuthorsView.as_view(), name="all_authcors"),
+    path("api/authors/", AuthorsView.as_view(), name="authors"),
     path("api/books/<int:id>/", BookByIdView.as_view(), name="book_by_id"),
     path("api/csrf-token/", get_token, name="api-csrf-token"),
-    path("api/authors/<int:author_id>", AuthorByIdView.as_view()),
+    path("api/authors/<int:author_id>", AuthorByIdView.as_view(), name="author_id"),
     path(
         "api/authors/<int:author_id>/books",
         AuthorBooksView.as_view(),

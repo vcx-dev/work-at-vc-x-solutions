@@ -22,9 +22,7 @@ class BooksView(View):
         if year_published:
             books = books.filter(year_published=year_published)
         if authorsid:
-            books = books.filter(
-                author__icontains=authorsid
-            )  # GENIAL ISSO AQUI! MUITO SIMPLES
+            books = books.filter(authors__id=authorsid)
 
         if not books.exists():
             return JsonResponse({"message": "No books found"}, status=404)
@@ -126,7 +124,7 @@ class AuthorByIdView(View):
     def delete(self, request, author_id):
         author = get_object_or_404(Author, id=author_id)
         for book in author.books.all():
-            if book.authors.count() == 1:  # Check if the author is the only one
+            if book.authors.count() == 1:  # verfica se autor eh o unico
                 return JsonResponse(
                     {
                         "response": f"You need to delete or update the book with id {book.id} "
