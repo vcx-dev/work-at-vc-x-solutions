@@ -1,6 +1,23 @@
 version: '3.8'
 
 services:
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000  # Run Django
+    volumes:
+      - .:/app  # Mounts the current directory to /app in the container
+    ports:
+      - "8000:8000"  # Expose port 8000 for the Django app
+    depends_on:
+      - db  # Wait for the DB to start
+    environment:
+      - DEBUG=1  # Optional: Enables debug mode
+      - DATABASE_NAME=vcx-teste
+      - DATABASE_USER=teste
+      - DATABASE_PASSWORD=teste
+      - DATABASE_HOST=db  # Refers to the db service name
+      - DATABASE_PORT=5432
+
   db:
     image: postgres:latest
     environment:

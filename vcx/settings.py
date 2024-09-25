@@ -81,7 +81,7 @@ DATABASES = {
         "NAME": "vcx-teste",
         "USER": "teste",
         "PASSWORD": "teste",
-        "HOST": "localhost",
+        "HOST": "vcx-db-1",
         "PORT": "5432",
     }
 }

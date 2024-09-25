@@ -98,7 +98,12 @@ class AuthorsView(View):
 
     def post(self, request):
         data = json.loads(request.body)
-        serializer = AuthorSerializer(data=data)
+        # pego os dados do post em portugues, transformo em ingles, e passo pro serializer
+        mapped_data = {
+            "name": data.get("nome"),
+        }
+
+        serializer = AuthorSerializer(data=mapped_data)
         if serializer.is_valid():  # se tiver todos os campos no formato correto
             serializer.save()  # salva
             return JsonResponse(serializer.data, status=201)
