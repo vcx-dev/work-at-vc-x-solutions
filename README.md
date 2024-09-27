@@ -39,7 +39,7 @@ Dado um arquivo CSV contendo vários autores (potencialmente mais de um milhão)
 importar esses dados para o banco de dados. O arquivo CSV terá o seguinte formato:
 
 ```csv
-nome
+name
 Luciano Ramalho
 Osvaldo Santana Neto
 David Beazley
@@ -51,7 +51,7 @@ J.K. Rowling
 Cada registro de autor no banco de dados deve incluir os seguintes campos:
 
 - id (gerado automaticamente);
-- nome.
+- name.
 
 Você precisará armazenar os dados dos autores para complementar os dados dos livros que serão
 armazenados posteriormente (veja o item #3).
@@ -77,24 +77,24 @@ Cada registro de livro deve conter os seguintes campos:
 
 - id (gerado automaticamente);
 
-- nome;
+- name;
 
-- edição;
+- edition;
 
-- ano de publicação;
+- publication_year;
 
-- autores (um livro pode ter vários autores).
+- authors (um livro pode ter vários autores).
 
 Para recuperar os dados de um livro, deve ser possível filtrar pelos seguintes campos
 (individualmente ou em combinação):
 
-- nome;
+- name;
 
-- ano de publicação;
+- publication_year;
 
-- edição;
+- edition;
 
-- autor.
+- author.
 
 > Esses filtros são opcionais, deve ser possível navegar por todos os registros de livros sem nenhum filtro.
 
@@ -102,10 +102,10 @@ Para criar um livro, use o seguinte payload JSON:
 
 ```json
 {
- "nome": "Nome do Livro",
- "edição": 1,
- "ano de publicação": 2021,
- "autores": [1, 2, 3]
+  "name": "Nome do Livro",
+  "edition": 1,
+  "publication_year": 2021,
+  "authors": [1, 2, 3]
 }
 ```
 
